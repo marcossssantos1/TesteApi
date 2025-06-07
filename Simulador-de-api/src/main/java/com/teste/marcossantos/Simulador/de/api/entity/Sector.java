@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table (name = "sectors")
+@Table
 public class Sector {
 
     @Id
@@ -23,6 +23,17 @@ public class Sector {
     private List<Spot> spots;
 
     public Sector() {
+    }
+
+    public Sector(Long id, String sector, Double price, int maxCapacity, String openHour, String closeHour, int durationLimitMinutes, List<Spot> spots) {
+        this.id = id;
+        this.sector = sector;
+        this.price = price;
+        this.maxCapacity = maxCapacity;
+        this.openHour = openHour;
+        this.closeHour = closeHour;
+        this.durationLimitMinutes = durationLimitMinutes;
+        this.spots = spots;
     }
 
     public Sector(Long id, String sector, Double price, int maxCapacity, String openHour, String closeHour, int durationLimitMinutes) {

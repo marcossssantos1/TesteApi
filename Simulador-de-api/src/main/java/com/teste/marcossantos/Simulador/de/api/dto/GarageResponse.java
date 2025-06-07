@@ -7,30 +7,30 @@ import java.util.List;
 
 
 public class GarageResponse {
-    private List<Sector> garage;
-    private List<Spot> spots;
+    private List<SectorDTO> garage;
+    private List<SpotDTO> spots;
 
     public GarageResponse() {
     }
 
-    public GarageResponse(List<Sector> garage, List<Spot> spots) {
+    public GarageResponse(List<SectorDTO> garage, List<SpotDTO> spots) {
         this.garage = garage;
         this.spots = spots;
     }
 
-    public List<Sector> getGarage() {
+    public List<SectorDTO> getGarage() {
         return garage;
     }
 
-    public void setGarage(List<Sector> garage) {
+    public void setGarage(List<SectorDTO> garage) {
         this.garage = garage;
     }
 
-    public List<Spot> getSpots() {
+    public List<SpotDTO> getSpots() {
         return spots;
     }
 
-    public void setSpots(List<Spot> spots) {
+    public void setSpots(List<SpotDTO> spots) {
         this.spots = spots;
     }
 }

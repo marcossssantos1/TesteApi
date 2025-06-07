@@ -7,12 +7,11 @@ import jakarta.persistence.*;
 public class Spot {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "sector_id", referencedColumnName = "id")
-    private String sector;
+    private Sector sector;
     private Double lat;
     private Double lng;
     private Boolean occupied;
@@ -20,7 +19,7 @@ public class Spot {
     public Spot() {
     }
 
-    public Spot(Long id, String sector, Double lat, Double lng, Boolean occupied) {
+    public Spot(Long id, Sector sector, Double lat, Double lng, Boolean occupied) {
         this.id = id;
         this.sector = sector;
         this.lat = lat;
@@ -36,11 +35,11 @@ public class Spot {
         this.id = id;
     }
 
-    public String getSector() {
+    public Sector getSector() {
         return sector;
     }
 
-    public void setSector(String sector) {
+    public void setSector(Sector sector) {
         this.sector = sector;
     }
 
