@@ -65,4 +65,11 @@ public class GarageService {
 
         spotRepository.saveAll(spots);
     };
+
+    public Spot findByLatLng(double lat, double lng) {
+        if (lat == 0 || lng == 0) {
+            throw new RuntimeException("Lat/Lng invalido");
+        }
+        return spotRepository.findByLatAndLng(lat, lng);
+    }
 }
