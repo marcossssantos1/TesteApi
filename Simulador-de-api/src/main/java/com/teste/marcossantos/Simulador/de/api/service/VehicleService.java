@@ -1,6 +1,6 @@
 package com.teste.marcossantos.Simulador.de.api.service;
 
-import com.teste.marcossantos.Simulador.de.api.dto.VehicleEventDTO;
+import com.teste.marcossantos.Simulador.de.api.dto.VehicleEntryDTO;
 import com.teste.marcossantos.Simulador.de.api.entity.Sector;
 import com.teste.marcossantos.Simulador.de.api.entity.Spot;
 import com.teste.marcossantos.Simulador.de.api.entity.Vehicle;
@@ -23,7 +23,7 @@ public class VehicleService {
     @Autowired
     private SpotRepository spotRepository;
 
-    public void processEntry(VehicleEventDTO dto) {
+    public void processEntry(VehicleEntryDTO dto) {
         // Verifica se o veículo já está ativo
         if (vehicleRepository.findByLicensePlateAndActiveTrue(dto.getLicense_plate()).isPresent()) {
             System.out.println("Veículo já está dentro da garagem!");
@@ -109,4 +109,20 @@ public class VehicleService {
     }
 
 
+    public void processExit(String licensePlate, LocalDateTime exitTime) {
+        Vehicle vehicle = vehicleRepository.findByLicensePlateAndActiveTrue(licensePlate)
+                .orElseThrow(() -> new RuntimeException("Veículo não encontrado ou já saiu"));
+
+        Spot spot = spotRepository.findByLatAndLng(vehicle.getLat(), vehicle.getLng());
+        if (spot != null) {
+            spot.setOccupied(false);
+            spotRepository.save(spot);
+        }
+
+        vehicle.setExitTime(exitTime);
+        vehicle.setActive(false);
+        vehicleRepository.save(vehicle);
+
+        System.out.println("Saída registrada: " + licensePlate + " liberou a vaga.");
+    }
 }

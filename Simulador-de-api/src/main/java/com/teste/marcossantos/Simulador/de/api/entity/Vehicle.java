@@ -23,7 +23,7 @@ public class Vehicle {
 
     private LocalDateTime entryTime;
 
-    private Instant exitTime;
+    private LocalDateTime exitTime;
 
     private Double lat;
 
@@ -38,7 +38,7 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(Long id, String licensePlate, String sector, Double price, boolean active, LocalDateTime entryTime, Instant exitTime, Double lat, Double lng, LocalDateTime timeParked, Sector sectors) {
+    public Vehicle(Long id, String licensePlate, String sector, Double price, boolean active, LocalDateTime entryTime, LocalDateTime exitTime, Double lat, Double lng, LocalDateTime timeParked, Sector sectors) {
         this.id = id;
         this.licensePlate = licensePlate;
         this.sector = sector;
@@ -52,7 +52,7 @@ public class Vehicle {
         this.sectors = sectors;
     }
 
-    public Vehicle(Long id, String licensePlate, String sector, Double price, boolean active, LocalDateTime entryTime, Instant exitTime) {
+    public Vehicle(Long id, String licensePlate, String sector, Double price, boolean active, LocalDateTime entryTime, LocalDateTime exitTime) {
         this.id = id;
         this.licensePlate = licensePlate;
         this.sector = sector;
@@ -110,11 +110,11 @@ public class Vehicle {
         this.entryTime = entryTime;
     }
 
-    public Instant getExitTime() {
+    public LocalDateTime getExitTime() {
         return exitTime;
     }
 
-    public void setExitTime(Instant exitTime) {
+    public void setExitTime(LocalDateTime exitTime) {
         this.exitTime = exitTime;
     }
 
