@@ -17,27 +17,15 @@ public class WebhookController {
     @Autowired
     private VehicleService vehicleService;
 
-    @PostMapping
-    public ResponseEntity<String> receiveEvent(@RequestBody VehicleEventDTO dto) {
-        if ("ENTRY".equalsIgnoreCase(dto.getEvent_type())) {
-            vehicleService.processEntry(dto);
-            return ResponseEntity.ok("Entrada registrada");
-        }
-        return ResponseEntity.badRequest().body("Evento não suportado");
+    @PostMapping("/entry")
+    public ResponseEntity<String> handleEntry(@RequestBody VehicleEventDTO dto) {
+        vehicleService.processEntry(dto);
+        return ResponseEntity.ok("Entrada registrada");
     }
 
-    @PostMapping("/webhook")
-    public ResponseEntity<Void> receiveWebhook(@RequestBody WebhookDTO dto) {
-        switch (dto.getEventType()) {
-            case "ENTRY":
-                VehicleEventDTO vehicleDTO = new VehicleEventDTO(dto.getLicensePlate(), dto.getEntryTime());
-                vehicleService.processEntry(vehicleDTO);
-                break;
-            case "PARKED":
-                vehicleService.handleParked(dto.getLicensePlate(), dto.getLat(), dto.getLng());
-                break;
-            // outros casos...
-        }
-        return ResponseEntity.ok().build();
+    @PostMapping("parked")
+    public ResponseEntity<String> handleParked(@RequestBody WebhookDTO dto) {
+        vehicleService.handleParked(dto.getLicense_plate(), dto.getLat(), dto.getLng());
+        return ResponseEntity.ok("Estacionamento registrado");
     }
 }

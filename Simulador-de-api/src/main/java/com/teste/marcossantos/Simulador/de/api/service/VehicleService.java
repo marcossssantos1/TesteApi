@@ -88,6 +88,10 @@ public class VehicleService {
     public void handleParked(String licensePlate, double lat, double lng) {
         Spot spot = spotRepository.findByLatAndLng(lat, lng);
 
+        if (spot == null) {
+            throw new RuntimeException("Vaga não encontrada com essas coordenadas");
+        }
+
         if (spot.getOccupied()) {
             throw new RuntimeException("Vaga já ocupada!");
         }
@@ -96,7 +100,7 @@ public class VehicleService {
                 .orElseThrow(() -> new RuntimeException("Entrada não encontrada para a placa"));
 
         spot.setOccupied(true);
-        spotRepository.save(spot); // salvar atualização da vaga
+        spotRepository.save(spot);
 
         entry.setLat(lat);
         entry.setLng(lng);
