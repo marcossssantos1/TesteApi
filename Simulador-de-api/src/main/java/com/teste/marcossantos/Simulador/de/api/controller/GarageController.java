@@ -17,7 +17,7 @@ public class GarageController {
     @Autowired
     private GarageService garageService;
 
-    @PostMapping("/import")
+    @PostMapping
     public ResponseEntity<String> importData() {
         garageService.importGarageData();
         return ResponseEntity.ok("Dados importados com sucesso");
