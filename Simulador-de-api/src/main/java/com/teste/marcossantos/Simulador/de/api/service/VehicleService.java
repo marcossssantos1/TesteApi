@@ -6,6 +6,9 @@ import com.teste.marcossantos.Simulador.de.api.dto.VehicleEntryDTO;
 import com.teste.marcossantos.Simulador.de.api.entity.Sector;
 import com.teste.marcossantos.Simulador.de.api.entity.Spot;
 import com.teste.marcossantos.Simulador.de.api.entity.Vehicle;
+import com.teste.marcossantos.Simulador.de.api.exceptions.SectorFullException;
+import com.teste.marcossantos.Simulador.de.api.exceptions.SpotOccupiedException;
+import com.teste.marcossantos.Simulador.de.api.exceptions.VehicleNotFoundException;
 import com.teste.marcossantos.Simulador.de.api.repository.SectorRepository;
 import com.teste.marcossantos.Simulador.de.api.repository.SpotRepository;
 import com.teste.marcossantos.Simulador.de.api.repository.VehicleRepository;
@@ -33,8 +36,7 @@ public class VehicleService {
     public void processEntry(VehicleEntryDTO dto) {
         // Verifica se o veículo já está ativo
         if (vehicleRepository.findByLicensePlateAndActiveTrue(dto.getLicense_plate()).isPresent()) {
-            System.out.println("Veículo já está dentro da garagem!");
-            return;
+            throw new RuntimeException("Veículo já está dentro da garagem!");
         }
 
         // Buscar todos os setores
@@ -74,8 +76,7 @@ public class VehicleService {
         }
 
         if (chosenSector == null) {
-            System.out.println("Todos os setores estão lotados!");
-            return;
+            throw new SectorFullException("Todos os setores estão lotados!");
         }
 
         Vehicle vehicle = new Vehicle();
@@ -100,11 +101,11 @@ public class VehicleService {
         }
 
         if (spot.getOccupied()) {
-            throw new RuntimeException("Vaga já ocupada!");
+            throw new SpotOccupiedException("Vaga já está ocupada!");
         }
 
         Vehicle entry = vehicleRepository.findByLicensePlateAndExitTimeIsNull(licensePlate)
-                .orElseThrow(() -> new RuntimeException("Entrada não encontrada para a placa"));
+                .orElseThrow(() -> new VehicleNotFoundException("Veículo com placa " + licensePlate + " não encontrado ou já saiu"));
 
         spot.setOccupied(true);
         spotRepository.save(spot);
@@ -117,8 +118,8 @@ public class VehicleService {
 
 
     public void processExit(String licensePlate, LocalDateTime exitTime) {
-        Vehicle vehicle = vehicleRepository.findByLicensePlateAndActiveTrue(licensePlate)
-                .orElseThrow(() -> new RuntimeException("Veículo não encontrado ou já saiu"));
+        Vehicle vehicle = vehicleRepository.findByLicensePlateAndExitTimeIsNull(licensePlate)
+                .orElseThrow(() -> new VehicleNotFoundException("Veículo com placa " + licensePlate + " não encontrado ou já saiu"));
 
         Spot spot = spotRepository.findByLatAndLng(vehicle.getLat(), vehicle.getLng());
         if (spot != null) {
