@@ -32,7 +32,7 @@ public class WebhookController {
                 vehicleService.processExit(dto.getLicense_plate(), dto.getExitTime());
                 break;
             default:
-                throw new RuntimeException("Evento não suportado");
+                throw new RuntimeException("Evento não suportado!!! Aceitamos apenas ENTRY, PARKED E EXIT");
         }
         return ResponseEntity.ok().build();
     }
