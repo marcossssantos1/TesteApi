@@ -1,6 +1,7 @@
 package com.teste.marcossantos.Simulador.de.api.controller;
 
 import com.teste.marcossantos.Simulador.de.api.dto.SpotDTO;
+import com.teste.marcossantos.Simulador.de.api.service.SpotStatusService;
 import com.teste.marcossantos.Simulador.de.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +17,11 @@ import java.util.Map;
 public class SpotStatusController {
 
     @Autowired
-    private VehicleService vehicleService;
+    private SpotStatusService spotStatusService;
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> checkSpotStatus(@RequestBody SpotDTO dto) {
-        Map<String, Object> response = vehicleService.getSpotStatus(dto.getLat(), dto.getLng());
+        Map<String, Object> response = spotStatusService.getSpotStatus(dto.getLat(), dto.getLng());
         return ResponseEntity.ok(response);
     }
 }

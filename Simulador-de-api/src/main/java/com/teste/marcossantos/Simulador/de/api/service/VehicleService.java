@@ -34,12 +34,10 @@ public class VehicleService {
     private SpotRepository spotRepository;
 
     public void processEntry(VehicleEntryDTO dto) {
-        // Verifica se o veículo já está ativo
         if (vehicleRepository.findByLicensePlateAndActiveTrue(dto.getLicense_plate()).isPresent()) {
             throw new RuntimeException("Veículo já está dentro da garagem!");
         }
 
-        // Buscar todos os setores
         List<Sector> sectors = sectorRepository.findAll();
 
         Sector chosenSector = null;
@@ -50,7 +48,7 @@ public class VehicleService {
 
             long occupiedCount = spots.stream().filter(Spot::getOccupied).count();
             if (occupiedCount >= sector.getMaxCapacity()) {
-                continue; // Pular setores lotados
+                continue;
             }
 
             double occupancyRate = (double) occupiedCount / sector.getMaxCapacity();
@@ -66,7 +64,6 @@ public class VehicleService {
                 price *= 1.25;
             }
 
-            // Escolhe o setor com menor taxa de ocupação ou primeiro disponível
             if (chosenSector == null || occupancyRate <
                     ((double) spotRepository.findBySector_Sector(chosenSector.getSector())
                             .stream().filter(Spot::getOccupied).count() / chosenSector.getMaxCapacity())) {
@@ -132,71 +129,5 @@ public class VehicleService {
         vehicleRepository.save(vehicle);
 
         System.out.println("Saída registrada: " + licensePlate + " liberou a vaga.");
-    }
-
-    public PlateStatusResponseDTO getPlateStatus(String licensePlate) {
-        Vehicle vehicle = vehicleRepository.findByLicensePlateAndActiveTrue(licensePlate)
-                .orElseThrow(() -> new RuntimeException("Veículo não encontrado ou já saiu"));
-
-        LocalDateTime now = LocalDateTime.now();
-        double price = vehicle.getPrice(); // ou calcular proporcional se necessário
-
-        return new PlateStatusResponseDTO(
-                vehicle.getLicensePlate(),
-                price,
-                vehicle.getEntryTime(),
-                vehicle.getTimeParked(),
-                vehicle.getLat(),
-                vehicle.getLng()
-        );
-    }
-
-    public Map<String, Object> getSpotStatus(double lat, double lng) {
-        Map<String, Object> response = new HashMap<>();
-
-        Spot spot = spotRepository.findByLatAndLng(lat, lng);
-        if (spot == null) {
-            throw new RuntimeException("Vaga não encontrada.");
-        }
-
-        response.put("ocupied", spot.getOccupied());
-
-        if (spot.getOccupied()) {
-            Optional<Vehicle> vehicleOpt = vehicleRepository.findByLatAndLngAndExitTimeIsNull(lat, lng);
-            if (vehicleOpt.isPresent()) {
-                Vehicle vehicle = vehicleOpt.get();
-                response.put("license_plate", vehicle.getLicensePlate());
-                response.put("entry_time", vehicle.getEntryTime());
-                response.put("time_parked", vehicle.getTimeParked());
-                response.put("price_until_now", vehicle.getPrice()); // ou calcule com base no tempo
-            } else {
-                preencherVazio(response);
-            }
-        } else {
-            preencherVazio(response);
-        }
-
-        return response;
-    }
-
-    private void preencherVazio(Map<String, Object> response) {
-        response.put("license_plate", "");
-        response.put("price_until_now", 0.0);
-        response.put("entry_time", null);
-        response.put("time_parked", null);
-    }
-
-    public RevenueResponseDTO calculateRevenue(String dateStr, String sector) {
-        LocalDate date = LocalDate.parse(dateStr);
-        LocalDateTime start = date.atStartOfDay();
-        LocalDateTime end = date.atTime(LocalTime.MAX);
-
-        List<Vehicle> vehicles = vehicleRepository.findBySectorAndExitTimeBetween(sector, start, end);
-
-        double total = vehicles.stream()
-                .mapToDouble(Vehicle::getPrice)
-                .sum();
-
-        return new RevenueResponseDTO(total, start.toString());
     }
 }
