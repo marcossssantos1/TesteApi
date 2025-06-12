@@ -70,11 +70,17 @@ public class VehicleEntryService {
             throw new SectorFullException("Todos os setores estão lotados!");
         }
 
+
         Vehicle vehicle = new Vehicle();
+
+        double precoOriginal = finalPrice;
+        double precoArredondado = Math.round(precoOriginal * 100.0) / 100.0;
+
+
         vehicle.setLicensePlate(dto.getLicense_plate());
         vehicle.setEntryTime(dto.getEntry_time());
         vehicle.setSector(chosenSector.getSector());
-        vehicle.setPrice(finalPrice);
+        vehicle.setPrice(precoArredondado);
         vehicle.setActive(true);
 
         vehicleRepository.save(vehicle);

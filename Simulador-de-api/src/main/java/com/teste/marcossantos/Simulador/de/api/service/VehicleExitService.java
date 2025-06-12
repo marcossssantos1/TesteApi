@@ -38,13 +38,12 @@ public class VehicleExitService {
     }
 
     private VehicleExitResponse buildExitResponse(Vehicle vehicle) {
-        double formattedPrice = Math.round(vehicle.getPrice() * 100.0) / 100.0;
         return new VehicleExitResponse(
                 "Saída registrada com sucesso.",
                 vehicle.getLicensePlate(),
                 vehicle.getExitTime(),
                 vehicle.getSector(),
-                formattedPrice
+                vehicle.getPrice()
         );
     }
 
