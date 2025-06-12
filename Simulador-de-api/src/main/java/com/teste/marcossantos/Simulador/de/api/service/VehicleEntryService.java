@@ -1,8 +1,7 @@
 package com.teste.marcossantos.Simulador.de.api.service;
 
-import com.teste.marcossantos.Simulador.de.api.dto.PlateStatusResponseDTO;
-import com.teste.marcossantos.Simulador.de.api.dto.RevenueResponseDTO;
 import com.teste.marcossantos.Simulador.de.api.dto.VehicleEntryDTO;
+import com.teste.marcossantos.Simulador.de.api.dto.VehicleEntryResponse;
 import com.teste.marcossantos.Simulador.de.api.entity.Sector;
 import com.teste.marcossantos.Simulador.de.api.entity.Spot;
 import com.teste.marcossantos.Simulador.de.api.entity.Vehicle;
@@ -15,16 +14,11 @@ import com.teste.marcossantos.Simulador.de.api.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
-public class VehicleService {
+public class VehicleEntryService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
@@ -33,7 +27,7 @@ public class VehicleService {
     @Autowired
     private SpotRepository spotRepository;
 
-    public void processEntry(VehicleEntryDTO dto) {
+    public VehicleEntryResponse  processEntry(VehicleEntryDTO dto) {
         if (vehicleRepository.findByLicensePlateAndActiveTrue(dto.getLicense_plate()).isPresent()) {
             throw new RuntimeException("Veículo já está dentro da garagem!");
         }
@@ -85,49 +79,16 @@ public class VehicleService {
 
         vehicleRepository.save(vehicle);
 
-        System.out.println("Veículo " + vehicle.getLicensePlate() +
-                " entrou no setor " + chosenSector.getSector() +
-                " com preço calculado de R$ " + finalPrice);
+        return buildEntryResponse(vehicle);
+
     }
 
-    public void handleParked(String licensePlate, double lat, double lng) {
-        Spot spot = spotRepository.findByLatAndLng(lat, lng);
-
-        if (spot == null) {
-            throw new RuntimeException("Vaga não encontrada com essas coordenadas");
-        }
-
-        if (spot.getOccupied()) {
-            throw new SpotOccupiedException("Vaga já está ocupada!");
-        }
-
-        Vehicle entry = vehicleRepository.findByLicensePlateAndExitTimeIsNull(licensePlate)
-                .orElseThrow(() -> new VehicleNotFoundException("Veículo com placa " + licensePlate + " não encontrado ou já saiu"));
-
-        spot.setOccupied(true);
-        spotRepository.save(spot);
-
-        entry.setLat(lat);
-        entry.setLng(lng);
-        entry.setTimeParked(LocalDateTime.now());
-        vehicleRepository.save(entry);
+    private VehicleEntryResponse buildEntryResponse(Vehicle vehicle) {
+        return new VehicleEntryResponse(
+                vehicle.getLicensePlate(),
+                vehicle.getSector(),
+                "Entrada registrada com sucesso!"
+        );
     }
 
-
-    public void processExit(String licensePlate, LocalDateTime exitTime) {
-        Vehicle vehicle = vehicleRepository.findByLicensePlateAndExitTimeIsNull(licensePlate)
-                .orElseThrow(() -> new VehicleNotFoundException("Veículo com placa " + licensePlate + " não encontrado ou já saiu"));
-
-        Spot spot = spotRepository.findByLatAndLng(vehicle.getLat(), vehicle.getLng());
-        if (spot != null) {
-            spot.setOccupied(false);
-            spotRepository.save(spot);
-        }
-
-        vehicle.setExitTime(exitTime);
-        vehicle.setActive(false);
-        vehicleRepository.save(vehicle);
-
-        System.out.println("Saída registrada: " + licensePlate + " liberou a vaga.");
-    }
 }

@@ -2,7 +2,6 @@ package com.teste.marcossantos.Simulador.de.api.controller;
 
 import com.teste.marcossantos.Simulador.de.api.dto.SpotDTO;
 import com.teste.marcossantos.Simulador.de.api.service.SpotStatusService;
-import com.teste.marcossantos.Simulador.de.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
