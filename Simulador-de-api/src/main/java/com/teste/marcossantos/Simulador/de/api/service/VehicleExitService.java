@@ -9,6 +9,7 @@ import com.teste.marcossantos.Simulador.de.api.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Service
@@ -20,7 +21,7 @@ public class VehicleExitService {
     @Autowired
     private SpotRepository spotRepository;
 
-    public VehicleExitResponse processExit(String licensePlate, LocalDateTime exitTime) {
+    public void processExit(String licensePlate, LocalDateTime exitTime) {
         Vehicle vehicle = vehicleRepository.findByLicensePlateAndExitTimeIsNull(licensePlate)
                 .orElseThrow(() -> new VehicleNotFoundException("Veículo com placa " + licensePlate + " não encontrado ou já saiu"));
 
@@ -34,17 +35,6 @@ public class VehicleExitService {
         vehicle.setActive(false);
         vehicleRepository.save(vehicle);
 
-        return buildExitResponse(vehicle);
-    }
-
-    private VehicleExitResponse buildExitResponse(Vehicle vehicle) {
-        return new VehicleExitResponse(
-                "Saída registrada com sucesso.",
-                vehicle.getLicensePlate(),
-                vehicle.getExitTime(),
-                vehicle.getSector(),
-                vehicle.getPrice()
-        );
     }
 
 }

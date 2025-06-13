@@ -7,6 +7,7 @@ import com.teste.marcossantos.Simulador.de.api.exceptions.SpotOccupiedException;
 import com.teste.marcossantos.Simulador.de.api.exceptions.VehicleNotFoundException;
 import com.teste.marcossantos.Simulador.de.api.repository.SpotRepository;
 import com.teste.marcossantos.Simulador.de.api.repository.VehicleRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class VehicleParkedService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    public ParkedResponse handleParked(String licensePlate, double lat, double lng) {
+    @Transactional
+    public void handleParked(String licensePlate, double lat, double lng) {
         Spot spot = spotRepository.findByLatAndLng(lat, lng);
 
         if (spot == null) {
@@ -43,15 +45,6 @@ public class VehicleParkedService {
         entry.setTimeParked(LocalDateTime.now());
         vehicleRepository.save(entry);
 
-        return buildParkedResponse(entry);
     }
 
-    private ParkedResponse buildParkedResponse(Vehicle vehicle) {
-        return new ParkedResponse(
-                "Veículo estacionado com sucesso!",
-                vehicle.getLicensePlate(),
-                vehicle.getLat(),
-                vehicle.getLng()
-        );
-    }
 }

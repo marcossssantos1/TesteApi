@@ -2,6 +2,7 @@ package com.teste.marcossantos.Simulador.de.api.entity;
 
 import jakarta.persistence.*;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -134,19 +135,19 @@ public class Vehicle {
         this.lng = lng;
     }
 
-    public LocalDateTime getTimeParked() {
-        return timeParked;
-    }
-
-    public void setTimeParked(LocalDateTime timeParked) {
-        this.timeParked = timeParked;
-    }
-
     public Sector getSectors() {
         return sectors;
     }
 
     public void setSectors(Sector sectors) {
         this.sectors = sectors;
+    }
+
+    public LocalDateTime getTimeParked() {
+        return timeParked;
+    }
+
+    public void setTimeParked(LocalDateTime timeParked) {
+        this.timeParked = timeParked;
     }
 }

@@ -27,7 +27,7 @@ public class VehicleEntryService {
     @Autowired
     private SpotRepository spotRepository;
 
-    public VehicleEntryResponse  processEntry(VehicleEntryDTO dto) {
+    public void  processEntry(VehicleEntryDTO dto) {
         if (vehicleRepository.findByLicensePlateAndActiveTrue(dto.getLicense_plate()).isPresent()) {
             throw new RuntimeException("Veículo já está dentro da garagem!");
         }
@@ -85,16 +85,7 @@ public class VehicleEntryService {
 
         vehicleRepository.save(vehicle);
 
-        return buildEntryResponse(vehicle);
 
-    }
-
-    private VehicleEntryResponse buildEntryResponse(Vehicle vehicle) {
-        return new VehicleEntryResponse(
-                vehicle.getLicensePlate(),
-                vehicle.getSector(),
-                "Entrada registrada com sucesso!"
-        );
     }
 
 }
