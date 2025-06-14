@@ -12,10 +12,13 @@ import com.teste.marcossantos.Simulador.de.api.repository.SectorRepository;
 import com.teste.marcossantos.Simulador.de.api.repository.SpotRepository;
 import com.teste.marcossantos.Simulador.de.api.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VehicleEntryService {
@@ -86,6 +89,40 @@ public class VehicleEntryService {
         vehicleRepository.save(vehicle);
 
 
+    }
+
+    public List<Object> processEntryBatch(List<VehicleEntryDTO> dtoList) {
+        List<Object> responses = new ArrayList<>();
+
+        for (VehicleEntryDTO dto : dtoList) {
+            try {
+                processEntry(dto);  // Sua lógica já existente de entrada
+                responses.add(Map.of(
+                        "license_plate", dto.getLicense_plate(),
+                        "status", "Entrada registrada com sucesso"
+                ));
+            } catch (SectorFullException e) {
+                responses.add(Map.of(
+                        "license_plate", dto.getLicense_plate(),
+                        "error", "Setor está cheio!",
+                        "statusCode", HttpStatus.BAD_REQUEST.value()
+                ));
+            } catch (SpotOccupiedException e) {
+                responses.add(Map.of(
+                        "license_plate", dto.getLicense_plate(),
+                        "error", "Vaga já está ocupada!",
+                        "statusCode", HttpStatus.CONFLICT.value()
+                ));
+            } catch (Exception e) {
+                responses.add(Map.of(
+                        "license_plate", dto.getLicense_plate(),
+                        "error", "Erro interno: " + e.getMessage(),
+                        "statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value()
+                ));
+            }
+        }
+
+        return responses;
     }
 
 }

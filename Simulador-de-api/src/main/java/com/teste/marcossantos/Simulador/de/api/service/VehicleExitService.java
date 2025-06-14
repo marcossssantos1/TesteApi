@@ -1,16 +1,19 @@
 package com.teste.marcossantos.Simulador.de.api.service;
 
-import com.teste.marcossantos.Simulador.de.api.dto.VehicleExitResponse;
+import com.teste.marcossantos.Simulador.de.api.dto.VehicleExitDTO;
 import com.teste.marcossantos.Simulador.de.api.entity.Spot;
 import com.teste.marcossantos.Simulador.de.api.entity.Vehicle;
 import com.teste.marcossantos.Simulador.de.api.exceptions.VehicleNotFoundException;
 import com.teste.marcossantos.Simulador.de.api.repository.SpotRepository;
 import com.teste.marcossantos.Simulador.de.api.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class VehicleExitService {
@@ -35,6 +38,34 @@ public class VehicleExitService {
         vehicle.setActive(false);
         vehicleRepository.save(vehicle);
 
+    }
+
+    public List<Object> processExitBatch(List<VehicleExitDTO> dtoList) {
+        List<Object> responses = new ArrayList<>();
+
+        for (VehicleExitDTO dto : dtoList) {
+            try {
+                processExit(dto);  // Sua lógica já existente para saída
+                responses.add(Map.of(
+                        "license_plate", dto.getLicensePlate(),
+                        "status", "Saída registrada com sucesso"
+                ));
+            } catch (VehicleNotFoundException e) {
+                responses.add(Map.of(
+                        "license_plate", dto.getLicensePlate(),
+                        "error", "Veículo não encontrado ou já saiu",
+                        "statusCode", HttpStatus.NOT_FOUND.value()
+                ));
+            } catch (Exception e) {
+                responses.add(Map.of(
+                        "license_plate", dto.getLicensePlate(),
+                        "error", "Erro interno: " + e.getMessage(),
+                        "statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value()
+                ));
+            }
+        }
+
+        return responses;
     }
 
 }

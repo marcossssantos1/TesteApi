@@ -2,22 +2,20 @@ package com.teste.marcossantos.Simulador.de.api.dto;
 
 import java.time.LocalDateTime;
 
-public class VehicleExitResponse {
+public class VehicleExitDTO {
 
     private String message;
     private String licensePlate;
     private LocalDateTime exitTime;
-    private String sector;
     private double finalPrice;
 
-    public VehicleExitResponse() {
+    public VehicleExitDTO() {
     }
 
-    public VehicleExitResponse(String message, String licensePlate, LocalDateTime exitTime, String sector, double finalPrice) {
+    public VehicleExitDTO(String message, String licensePlate, LocalDateTime exitTime, double finalPrice) {
         this.message = message;
         this.licensePlate = licensePlate;
         this.exitTime = exitTime;
-        this.sector = sector;
         this.finalPrice = finalPrice;
     }
 
@@ -45,13 +43,6 @@ public class VehicleExitResponse {
         this.exitTime = exitTime;
     }
 
-    public String getSector() {
-        return sector;
-    }
-
-    public void setSector(String sector) {
-        this.sector = sector;
-    }
 
     public double getFinalPrice() {
         return finalPrice;
