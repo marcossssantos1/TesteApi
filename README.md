@@ -46,7 +46,9 @@ Consulta do status da placa: Verifica se um veículo está ativo na garagem.
 
 Importação de dados: Carrega dados iniciais ou atualiza dados da garagem.
 
-Tecnologias Utilizadas Java 21
+Tecnologias Utilizadas 
+
+Java 21
 
 Spring Boot 3.5.0
 
