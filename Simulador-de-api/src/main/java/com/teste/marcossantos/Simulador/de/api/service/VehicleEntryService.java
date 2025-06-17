@@ -105,7 +105,7 @@ public class VehicleEntryService {
                 responses.add(Map.of(
                         "license_plate", dto.getLicense_plate(),
                         "error", "Setor está cheio!",
-                        "statusCode", HttpStatus.BAD_REQUEST.value()
+                        "statusCode", HttpStatus.CONFLICT.value()
                 ));
             } catch (SpotOccupiedException e) {
                 responses.add(Map.of(

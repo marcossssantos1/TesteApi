@@ -45,11 +45,27 @@ public class VehicleExitService {
 
         for (VehicleExitDTO dto : dtoList) {
             try {
-                processExit(dto);  // Sua lógica já existente para saída
+                Vehicle vehicle = vehicleRepository.findByLicensePlateAndExitTimeIsNull(dto.getLicensePlate())
+                        .orElseThrow(() -> new VehicleNotFoundException("Veículo com placa " + dto.getLicensePlate() + " não encontrado ou já saiu"));
+
+                // Libera a vaga
+                Spot spot = spotRepository.findByLatAndLng(vehicle.getLat(), vehicle.getLng());
+                if (spot != null) {
+                    spot.setOccupied(false);
+                    spotRepository.save(spot);
+                }
+
+                vehicle.setExitTime(dto.getExitTime());
+                vehicle.setActive(false);
+                vehicleRepository.save(vehicle);
+
+                // Adiciona à resposta com valor
                 responses.add(Map.of(
                         "license_plate", dto.getLicensePlate(),
-                        "status", "Saída registrada com sucesso"
+                        "status", "Saída registrada com sucesso",
+                        "price", vehicle.getPrice()
                 ));
+
             } catch (VehicleNotFoundException e) {
                 responses.add(Map.of(
                         "license_plate", dto.getLicensePlate(),

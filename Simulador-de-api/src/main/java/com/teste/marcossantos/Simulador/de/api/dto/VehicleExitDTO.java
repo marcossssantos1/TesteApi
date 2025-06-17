@@ -1,30 +1,30 @@
 package com.teste.marcossantos.Simulador.de.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class VehicleExitDTO {
 
-    private String message;
+    private String event_type;
     private String licensePlate;
     private LocalDateTime exitTime;
-    private double finalPrice;
 
     public VehicleExitDTO() {
     }
 
-    public VehicleExitDTO(String message, String licensePlate, LocalDateTime exitTime, double finalPrice) {
-        this.message = message;
+    public VehicleExitDTO(String event_type, String licensePlate, LocalDateTime exitTime) {
+        this.event_type = event_type;
         this.licensePlate = licensePlate;
         this.exitTime = exitTime;
-        this.finalPrice = finalPrice;
     }
 
-    public String getMessage() {
-        return message;
+    public String getEvent_type() {
+        return event_type;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setEvent_type(String event_type) {
+        this.event_type = event_type;
     }
 
     public String getLicensePlate() {
@@ -43,12 +43,4 @@ public class VehicleExitDTO {
         this.exitTime = exitTime;
     }
 
-
-    public double getFinalPrice() {
-        return finalPrice;
-    }
-
-    public void setFinalPrice(double finalPrice) {
-        this.finalPrice = finalPrice;
-    }
 }
