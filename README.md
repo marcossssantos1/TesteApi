@@ -1,4 +1,4 @@
-Simulador de API de Garagem
+## Simulador de API de Garagem
 API RESTful para gerenciamento de estacionamento e garagem, com funcionalidades para controle de entradas e saídas de veículos, monitoramento de vagas, cálculo dinâmico de preços e relatórios de receita.
 
 Índice
@@ -30,10 +30,6 @@ Tratamento de Erros
 
 Swagger / OpenAPI
 
-Contribuição
-
-Licença
-
 Funcionalidades
 Registro de entrada de veículos: Recebe listas de veículos entrando, valida capacidade dos setores e calcula preço dinâmico baseado na ocupação.
 
@@ -56,7 +52,7 @@ Spring Boot 3.5.0
 
 Spring Data JPA
 
-MySQL como banco de dados
+MySQL (como banco de dados)
 
 Springdoc OpenAPI (Swagger UI) para documentação interativa
 
@@ -74,13 +70,22 @@ Configurar o banco e variáveis no application.properties ou application.yml
 Configuração e Execução
 Clone o repositório:
 
+bash
+Copiar
+Editar
 git clone https://github.com/marcossssantos1/TesteApi.git
 cd simulador-de-api
-Configure o banco MySQL (crie o schema garagem):
+Configure o banco MySQL (crie o schema):
 
+sql
+Copiar
+Editar
 CREATE DATABASE bancoteste;
 Configure o arquivo src/main/resources/application.properties:
 
+properties
+Copiar
+Editar
 spring.datasource.url=jdbc:mysql://localhost:3306/bancoteste?useSSL=false&serverTimezone=UTC
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
@@ -89,6 +94,9 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 Compile e rode a aplicação:
 
+bash
+Copiar
+Editar
 mvn clean install
 mvn spring-boot:run
 Acesse a API:
@@ -105,11 +113,13 @@ Recebe uma lista de veículos que estão entrando.
 
 Calcula o preço dinamicamente baseado na ocupação dos setores.
 
-Retorna status 200 se tudo ok, ou 207 para processamento parcial.
+Retorna status 200 OK se tudo ok, ou 207 Multi-Status para processamento parcial.
 
-Exemplo de request:
+Exemplo de Request:
 
 json
+Copiar
+Editar
 [
   {
     "license_plate": "ABC1234",
@@ -122,9 +132,11 @@ json
     "event_type": "ENTRY"
   }
 ]
-Exemplo de response (parcial com erros):
+Exemplo de Response (com erro em um item):
 
 json
+Copiar
+Editar
 [
   {
     "license_plate": "ABC1234",
@@ -136,19 +148,20 @@ json
     "statusCode": 409
   }
 ]
-
 Saída de Veículos (Batch)
 POST /exit
 
 Recebe uma lista de veículos saindo.
 
-Atualiza vaga e calcula o tempo de permanência.
+Atualiza status da vaga e calcula o tempo de permanência.
 
-Retorna status 200 ou 207 conforme resultado.
+Retorna status 200 OK ou 207 Multi-Status.
 
-Exemplo de request:
+Exemplo de Request:
 
 json
+Copiar
+Editar
 [
   {
     "license_plate": "ABC1234",
@@ -156,45 +169,45 @@ json
     "event_type": "EXIT"
   }
 ]
-
 Registro de Veículos Estacionados (Batch)
 POST /parked
 
-Atualiza status dos veículos estacionados, podendo registrar tempo, posição, etc.
+Atualiza status dos veículos estacionados (ex.: tempo, localização).
 
 Consulta de Status de Vaga
 POST /spot/status
 
 Recebe latitude e longitude.
 
-Retorna status da vaga (ocupada/livre) e detalhes.
+Retorna se a vaga está ocupada ou livre.
 
-Exemplo de request:
+Exemplo de Request:
 
 json
+Copiar
+Editar
 {
   "lat": -23.5505,
   "lng": -46.6333
 }
-
 Consulta de Receita
 POST /revenue
 
 Recebe data e setor.
 
-Retorna receita calculada para o setor naquele dia.
+Retorna a receita total daquele setor no dia.
 
 Consulta de Status da Placa
 POST /plate/status
 
-Recebe placa do veículo.
+Recebe o número da placa.
 
-Retorna se o veículo está ativo (dentro da garagem) ou não.
+Retorna se o veículo está ativo na garagem ou não.
 
 Importação de Dados
 POST /import
 
-Aciona importação dos dados da garagem a partir de arquivo ou fonte configurada.
+Aciona a importação dos dados da garagem a partir de fonte configurada.
 
 Retorna mensagem de sucesso.
 
@@ -210,6 +223,5 @@ Swagger / OpenAPI
 A documentação automática está disponível em:
 
 http://localhost:8080/swagger-ui/index.html
-Permite testar todos os endpoints com exemplos e visualizar schemas das requisições e respostas.
 
-
+Você pode testar todos os endpoints diretamente via Swagger UI, com exemplos de request e response
