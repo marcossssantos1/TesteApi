@@ -1,8 +1,8 @@
-## Simulador de API de Garagem
+## Simulador de API de Garagem 
+
 API RESTful para gerenciamento de estacionamento e garagem, com funcionalidades para controle de entradas e saídas de veículos, monitoramento de vagas, cálculo dinâmico de preços e relatórios de receita.
 
-Índice
-Funcionalidades
+Índice Funcionalidades
 
 Tecnologias Utilizadas
 
@@ -30,8 +30,9 @@ Tratamento de Erros
 
 Swagger / OpenAPI
 
-Funcionalidades
-Registro de entrada de veículos: Recebe listas de veículos entrando, valida capacidade dos setores e calcula preço dinâmico baseado na ocupação.
+Contribuição
+
+Funcionalidades Registro de entrada de veículos: Recebe listas de veículos entrando, valida capacidade dos setores e calcula preço dinâmico baseado na ocupação.
 
 Registro de saída de veículos: Recebe listas de saídas, atualiza status da vaga e calcula o tempo estacionado.
 
@@ -45,21 +46,19 @@ Consulta do status da placa: Verifica se um veículo está ativo na garagem.
 
 Importação de dados: Carrega dados iniciais ou atualiza dados da garagem.
 
-Tecnologias Utilizadas
-Java 21
+Tecnologias Utilizadas Java 21
 
 Spring Boot 3.5.0
 
 Spring Data JPA
 
-MySQL (como banco de dados)
+MySQL como banco de dados
 
 Springdoc OpenAPI (Swagger UI) para documentação interativa
 
 Maven para gerenciamento de dependências e build
 
-Pré-requisitos
-JDK 21 instalado
+Pré-requisitos JDK 21 instalado
 
 MySQL rodando e configurado
 
@@ -67,161 +66,99 @@ Maven instalado
 
 Configurar o banco e variáveis no application.properties ou application.yml
 
-Configuração e Execução
-Clone o repositório:
+Configuração e Execução Clone o repositório:
 
-bash
-Copiar
-Editar
-git clone https://github.com/marcossssantos1/TesteApi.git
-cd simulador-de-api
-Configure o banco MySQL (crie o schema):
+git clone https://github.com/marcossssantos1/TesteApi.git 
 
-sql
-Copiar
-Editar
-CREATE DATABASE bancoteste;
+cd simulador-de-api 
+
+Configure o banco MySQL (crie o schema bancoteste):
+
+CREATE DATABASE bancoteste; 
+
 Configure o arquivo src/main/resources/application.properties:
 
-properties
-Copiar
-Editar
-spring.datasource.url=jdbc:mysql://localhost:3306/bancoteste?useSSL=false&serverTimezone=UTC
-spring.datasource.username=seu_usuario
+spring.datasource.url=jdbc:mysql://localhost:3306/bancoteste?useSSL=false&serverTimezone=UTC 
+spring.datasource.username=seu_usuario 
 spring.datasource.password=sua_senha
 
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-Compile e rode a aplicação:
+spring.jpa.hibernate.ddl-auto=update spring.jpa.show-sql=true Compile e rode a aplicação:
 
-bash
-Copiar
-Editar
-mvn clean install
-mvn spring-boot:run
-Acesse a API:
+mvn clean install mvn spring-boot:run Acesse a API:
 
 Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 JSON Docs: http://localhost:8080/v3/api-docs
 
-Endpoints
-Entrada de Veículos (Batch)
-POST /entry
+Endpoints Entrada de Veículos (Batch) POST /entry
 
 Recebe uma lista de veículos que estão entrando.
 
 Calcula o preço dinamicamente baseado na ocupação dos setores.
 
-Retorna status 200 OK se tudo ok, ou 207 Multi-Status para processamento parcial.
+Retorna status 200 se tudo ok, ou 207 para processamento parcial.
 
-Exemplo de Request:
+Exemplo de request:
 
-json
-Copiar
-Editar
-[
-  {
-    "license_plate": "ABC1234",
-    "entry_time": "2025-06-16T14:00:00",
-    "event_type": "ENTRY"
-  },
-  {
-    "license_plate": "XYZ9876",
-    "entry_time": "2025-06-16T14:05:00",
-    "event_type": "ENTRY"
-  }
-]
-Exemplo de Response (com erro em um item):
+json [ { "license_plate": "ABC1234", "entry_time": "2025-06-16T14:00:00", "event_type": "ENTRY" }, { "license_plate": "XYZ9876", "entry_time": "2025-06-16T14:05:00", "event_type": "ENTRY" } ] 
 
-json
-Copiar
-Editar
-[
-  {
-    "license_plate": "ABC1234",
-    "status": "Entrada registrada com sucesso"
-  },
-  {
-    "license_plate": "XYZ9876",
-    "error": "Veículo já está dentro da garagem!",
-    "statusCode": 409
-  }
-]
-Saída de Veículos (Batch)
-POST /exit
+Exemplo de response (parcial com erros):
+
+json [ { "license_plate": "ABC1234", "status": "Entrada registrada com sucesso" }, { "license_plate": "XYZ9876", "error": "Veículo já está dentro da garagem!", "statusCode": 409 } ]
+
+Saída de Veículos (Batch) POST /exit
 
 Recebe uma lista de veículos saindo.
 
-Atualiza status da vaga e calcula o tempo de permanência.
+Atualiza vaga e calcula o tempo de permanência.
 
-Retorna status 200 OK ou 207 Multi-Status.
+Retorna status 200 ou 207 conforme resultado.
 
-Exemplo de Request:
+Exemplo de request:
 
-json
-Copiar
-Editar
-[
-  {
-    "license_plate": "ABC1234",
-    "exit_time": "2025-06-16T16:00:00",
-    "event_type": "EXIT"
-  }
-]
-Registro de Veículos Estacionados (Batch)
-POST /parked
+json [ { "license_plate": "ABC1234", "exit_time": "2025-06-16T16:00:00", "event_type": "EXIT" } ]
 
-Atualiza status dos veículos estacionados (ex.: tempo, localização).
+Registro de Veículos Estacionados (Batch) POST /parked
 
-Consulta de Status de Vaga
-POST /spot/status
+Atualiza status dos veículos estacionados, podendo registrar tempo, posição, etc.
+
+Consulta de Status de Vaga POST /spot/status
 
 Recebe latitude e longitude.
 
-Retorna se a vaga está ocupada ou livre.
+Retorna status da vaga (ocupada/livre) e detalhes.
 
-Exemplo de Request:
+Exemplo de request:
 
-json
-Copiar
-Editar
-{
-  "lat": -23.5505,
-  "lng": -46.6333
-}
-Consulta de Receita
-POST /revenue
+json { "lat": -23.5505, "lng": -46.6333 }
+
+Consulta de Receita POST /revenue
 
 Recebe data e setor.
 
-Retorna a receita total daquele setor no dia.
+Retorna receita calculada para o setor naquele dia.
 
-Consulta de Status da Placa
-POST /plate/status
+Consulta de Status da Placa POST /plate/status
 
-Recebe o número da placa.
+Recebe placa do veículo.
 
-Retorna se o veículo está ativo na garagem ou não.
+Retorna se o veículo está ativo (dentro da garagem) ou não.
 
-Importação de Dados
-POST /import
+Importação de Dados POST /import
 
-Aciona a importação dos dados da garagem a partir de fonte configurada.
+Aciona importação dos dados da garagem a partir de arquivo ou fonte configurada.
 
 Retorna mensagem de sucesso.
 
-Tratamento de Erros
-Código	Significado	Descrição
-200	OK	Tudo processado com sucesso
-207	Multi-Status	Processamento parcial com erros em alguns itens
-400	Bad Request	Requisição mal formatada
-409	Conflict	Conflito, como veículo já registrado ou setor cheio
-500	Internal Server Error	Erro inesperado no servidor
+Tratamento de Erros Código:
+Descrição 
+200 OK Tudo processado com sucesso 
+207 Multi-Status Processamento parcial com erros em alguns itens 
+400 Bad Request Requisição mal formatada 409 Conflict Conflito, como veículo já registrado ou setor cheio 
+500 Internal Server Error Erro inesperado no servidor
 
-Swagger / OpenAPI
-A documentação automática está disponível em:
+Swagger / OpenAPI A documentação automática está disponível em:
 
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8080/swagger-ui/index.html 
 
-Você pode testar todos os endpoints diretamente via Swagger UI, com exemplos de request e response
+Permite testar todos os endpoints com exemplos e visualizar schemas das requisições e respostas.
